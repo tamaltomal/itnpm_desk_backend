@@ -1,0 +1,3 @@
+venv/
+database/migrations/000*
+activity/migrations/000*
