@@ -4,14 +4,6 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 
 # Create your models here.
-class Pool(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    name = models.CharField(max_length=50, null=False)
-    address_range = models.CharField(max_length=35, null=False)
-
-    def __str__(self):
-        return f'Name: {self.name}, Range: {self.address_range}'
-
 class AccessHour(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=150, null=False)
@@ -23,10 +15,18 @@ class AccessHour(models.Model):
     def __str__(self):
         return f'Name: {self.name}, Expire at: {self.date}'
 
+class Pool(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    name = models.CharField(max_length=50, null=False)
+    address_range = models.CharField(max_length=35, null=False)
+
+    def __str__(self):
+        return f'Name: {self.name}, Range: {self.address_range}'
+
 class Address(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     ipv4 = models.CharField(max_length=15, null=False)
-    pool = models.ForeignKey(Pool, on_delete=models.CASCADE)
+    pool = models.ForeignKey(Pool, on_delete=models.CASCADE, related_name = 'addresses')
 
     def __str__(self):
         return f'Address: {self.ipv4}, Belongs to: {self.pool}'
@@ -57,8 +57,8 @@ class Tunnel(models.Model):
     name = models.CharField(max_length=50, null=False)
     auth_server = models.CharField(max_length=20, null=False)
     url = models.CharField(max_length=200, null=False)
-    pools = models.ManyToManyField(Pool)
-    policies = models.ManyToManyField(Policy)
+    pools = models.ManyToManyField(Pool, related_name='+')
+    policies = models.ManyToManyField(Policy, related_name='+')
     updated = models.DateTimeField(auto_now_add=True)
     approval = models.CharField(max_length=20, null=True)
 
