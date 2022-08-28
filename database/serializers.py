@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tunnel, Pool, Address, Policy
+from .models import Tunnel, Pool, Address, Policy, AccessList
 
 
 class AddressDetailSerializer(serializers.ModelSerializer):
@@ -25,16 +25,32 @@ class PoolDetailSerializer(serializers.ModelSerializer):
         model = Pool
         fields = '__all__'
 
+class AccessListDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccessList
+        fields = [
+            'id',
+            'name',
+        ]
 
 class PolicyDetailSerializer(serializers.ModelSerializer):
+    access_lists = AccessListDetailSerializer(read_only=True, many=True)
     class Meta:
         model = Policy
         fields = '__all__'
 
+class PolicyListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Policy
+        fields = [
+            'id',
+            'name',
+        ]
+
 
 class TunnelListSerializer(serializers.ModelSerializer):
     pools = PoolDetailSerializer(read_only=True, many=True)
-    policies = PolicyDetailSerializer(read_only=True, many=True)
+    policies = PolicyListSerializer(read_only=True, many=True)
     class Meta:
         model = Tunnel
         fields = [

@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'vrco',
         'USER': 'vrco',
         'PASSWORD': 'Traviz8102',
-        'HOST': '192.168.0.16',
+        'HOST': 'localhost',
         'PORT': '5401',
     }
 }

@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from rest_framework import generics
 from .fw_cmd import asafw
-from .models import Tunnel, Pool
-from .serializers import TunnelListSerializer, TunnelDetailSerializer, PoolListSerializer, PoolDetailSerializer
+from .models import Tunnel, Pool, Policy
+from .serializers import TunnelListSerializer, TunnelDetailSerializer, PoolListSerializer, PoolDetailSerializer, PolicyDetailSerializer
 
 # Create your views here.
 def database(request):
@@ -11,7 +11,7 @@ def database(request):
 
 
 def config_pull(request):
-    config_file = asafw.run_config()
+    config_file = asafw.run_config(username, password, host)
     return HttpResponse(config_file)
 
 config_file = './database/fw_cmd/config_output/output.txt'
@@ -44,11 +44,18 @@ class TunnelRetrieveView(generics.RetrieveAPIView):
     queryset = Tunnel.objects.all()
     serializer_class = TunnelDetailSerializer
 
+
 class PoolListView(generics.ListAPIView):
     queryset = Pool.objects.all()
     serializer_class = PoolListSerializer
+
 
 class PoolRetrieveView(generics.RetrieveAPIView):
     lookup_field = 'id'
     queryset = Pool.objects.all()
     serializer_class = PoolDetailSerializer
+
+
+class PolicyListView(generics.ListAPIView):
+    queryset = Policy.objects.all()
+    serializer_class = PolicyDetailSerializer
